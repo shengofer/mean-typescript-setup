@@ -49,9 +49,6 @@ A window will automatically open at [localhost:4200](http://localhost:4200). Ang
 13. `git push heroku master`
 14. `heroku open` and a window will open with your app online
 
-## Preview
-![Preview](https://raw.githubusercontent.com/DavideViolante/Angular2-Full-Stack/master/demo.gif "Preview")
-
 ## Please open an issue if
 * you have any suggestion to improve this project
 * you noticed any problem or error
