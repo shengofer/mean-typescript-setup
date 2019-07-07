@@ -7,7 +7,7 @@ import { CatService } from '../services/cat.service';
 import { ToastComponent } from '../shared/toast/toast.component';
 import { Cat } from '../shared/models/cat.model';
 import { CatState } from './cat.state';
-import { AddCat, GetCats } from './cat.actions';
+import { AddCat, DeleteCat, GetCats, UpdateCat } from './cat.actions';
 
 @Component({
   selector: 'app-cats',
@@ -34,9 +34,6 @@ export class CatsComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.getCats();
-
-    // console.log(this.catsList);
     this.addCatForm = this.formBuilder.group({
       name: this.name,
       age: this.age,
@@ -46,7 +43,6 @@ export class CatsComponent implements OnInit {
       .subscribe((items) => {
         this.cats = items;
         this.isLoading = false
-        console.log('qwe', this.cats);
       })
   }
 
@@ -61,18 +57,10 @@ export class CatsComponent implements OnInit {
   addCat() {
     this.store.dispatch(new AddCat(this.addCatForm.value))
       .subscribe((item) => {
-     //   console.log('add Items',item);
         this.addCatForm.reset();
         this.toast.setMessage('item added successfully.', 'success');
       });
-    /*    this.catService.addCat(this.addCatForm.value).subscribe(
-          res => {
-            this.cats.push(res);
-            this.addCatForm.reset();
-            this.toast.setMessage('item added successfully.', 'success');
-          },
-          error => console.log(error)
-        );*/
+
   }
 
   enableEditing(cat: Cat) {
@@ -85,30 +73,24 @@ export class CatsComponent implements OnInit {
     this.cat = new Cat();
     this.toast.setMessage('item editing cancelled.', 'warning');
     // reload the cats to reset the editing
-    this.getCats();
+    this.store.dispatch(new GetCats());
   }
 
   editCat(cat: Cat) {
-    this.catService.editCat(cat).subscribe(
-      () => {
+    this.store.dispatch(new UpdateCat(cat))
+      .subscribe((item) => {
         this.isEditing = false;
-        this.cat = cat;
+        this.cat = item;
         this.toast.setMessage('item edited successfully.', 'success');
-      },
-      error => console.log(error)
-    );
+      });
   }
 
   deleteCat(cat: Cat) {
     if (window.confirm('Are you sure you want to permanently delete this item?')) {
-      this.catService.deleteCat(cat).subscribe(
-        () => {
-          const pos = this.cats.map(elem => elem._id).indexOf(cat._id);
-          this.cats.splice(pos, 1);
+      this.store.dispatch(new DeleteCat(cat))
+        .subscribe(() => {
           this.toast.setMessage('item deleted successfully.', 'success');
-        },
-        error => console.log(error)
-      );
+        })
     }
   }
 

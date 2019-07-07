@@ -14,14 +14,14 @@ export class GetCats {
 export class UpdateCat {
   static readonly type = '[Cat] Update';
 
-  constructor(public payload: Cat, public id: number) {
+  constructor(public payload: Cat) {
   }
 }
 
 export class DeleteCat {
   static readonly type = '[Cat] Delete';
 
-  constructor(public id: number) {
+  constructor(public payload: Cat) {
   }
 }
 
