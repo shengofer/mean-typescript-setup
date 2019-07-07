@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs/Rx';
 
 import { CatService } from '../services/cat.service';
 import { ToastComponent } from '../shared/toast/toast.component';
 import { Cat } from '../shared/models/cat.model';
+import { CatState } from './cat.state';
+import { AddCat, GetCats } from './cat.actions';
 
 @Component({
   selector: 'app-cats',
@@ -16,7 +20,7 @@ export class CatsComponent implements OnInit {
   cats: Cat[] = [];
   isLoading = true;
   isEditing = false;
-
+  @Select(CatState.getCatsList) catsList$: Observable<Cat[]>;
   addCatForm: FormGroup;
   name = new FormControl('', Validators.required);
   age = new FormControl('', Validators.required);
@@ -24,15 +28,26 @@ export class CatsComponent implements OnInit {
 
   constructor(private catService: CatService,
               private formBuilder: FormBuilder,
-              public toast: ToastComponent) { }
+              private store: Store,
+              public toast: ToastComponent) {
+    this.store.dispatch(new GetCats());
+  }
 
   ngOnInit() {
-    this.getCats();
+    // this.getCats();
+
+    // console.log(this.catsList);
     this.addCatForm = this.formBuilder.group({
       name: this.name,
       age: this.age,
       weight: this.weight
     });
+    this.catsList$
+      .subscribe((items) => {
+        this.cats = items;
+        this.isLoading = false
+        console.log('qwe', this.cats);
+      })
   }
 
   getCats() {
@@ -44,14 +59,20 @@ export class CatsComponent implements OnInit {
   }
 
   addCat() {
-    this.catService.addCat(this.addCatForm.value).subscribe(
-      res => {
-        this.cats.push(res);
+    this.store.dispatch(new AddCat(this.addCatForm.value))
+      .subscribe((item) => {
+     //   console.log('add Items',item);
         this.addCatForm.reset();
         this.toast.setMessage('item added successfully.', 'success');
-      },
-      error => console.log(error)
-    );
+      });
+    /*    this.catService.addCat(this.addCatForm.value).subscribe(
+          res => {
+            this.cats.push(res);
+            this.addCatForm.reset();
+            this.toast.setMessage('item added successfully.', 'success');
+          },
+          error => console.log(error)
+        );*/
   }
 
   enableEditing(cat: Cat) {
