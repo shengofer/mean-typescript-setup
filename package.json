@@ -7,6 +7,28 @@
     "node": "8.11.1",
     "npm": "6.4.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shengofer/mean-typescript-setup.git"
+  },
+  "bugs": {
+    "type": "git",
+    "url": "https://github.com/shengofer/mean-typescript-setup/issues"
+  },
+  "homepage": "https://github.com/shengofer/mean-typescript-setup",
+  "keywords": [
+    "angular",
+    "mean",
+    "fullstack",
+    "express",
+    "nodejs",
+    "mongodb",
+    "typescript",
+    "javascript",
+    "projects",
+    "setup",
+    "seed"
+  ],
   "scripts": {
     "ng": "ng",
     "build": "ng build --prod",
